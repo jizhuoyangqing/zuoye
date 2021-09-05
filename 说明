@@ -1,0 +1,227 @@
+API接口文档Swagger
+0.在父工程中指定jdk编译时的版本(因为：有时候项目clean之后会改变版本)(3.2的Maven我的加上反而报错了,用3.1可以)
+1.在huiminpay_merchant_api中引入common项目坐标
+  (因为_api中需要swagger，application中也需要swagger。application中引入了_api,也就相当于有了common)
+
+2.在huiminpay-common项目中添加依赖，只需要在huiminpay-common中进行配置即可，
+  因为其他微服务工程都直接或间接依赖huiminpay-common。
+一个核心包springfox-swagger2，一个ui前端界面包springfox-swagger-ui
+
+3.在huiminpay_merchant_application项目中写Swagger的配置类(@Configuration让spriongboot可以扫描到)
+  配置类要加@EnableSwagger2，进行开启Swagger
+  复制该配置：只需要改变apiInfo和包路径即可
+
+    常用Swagger注解如下：
+    @Api：修饰整个类，描述Controller的作用
+    @ApiOperation：描述一个类的一个方法，或者说一个接口
+    @ApiParam：单个参数的描述信息
+    @ApiModel：用对象来接收参数
+    @ApiModelProperty：用对象接收参数时，描述对象的一个字段
+    @ApiResponse：HTTP响应其中1个描述
+    @ApiResponses：HTTP响应整体描述
+    @ApiIgnore：使用该注解忽略这个API
+    @ApiError ：发生错误返回的信息
+    @ApiImplicitParam：一个请求参数
+    @ApiImplicitParams：多个请求参数的描述信息
+
+4.添加SpringMVC类：WebMvcConﬁg，让外部可直接访问Swagger文档
+  配置静态页面的访问地址，把静态资源给放过
+  是固定写法,写一个类实现WebMvcConfigurer
+
+5.开始使用Swagger的注解
+   1.在MerchantController类加注解 @Api(value = "商品应用API接口",description = "商品应用API接口,包含增删改查功能")
+     进行对类的描述
+   2.在MerchantController类的方法上加@ApiOperation(value = "根据商铺的id获取商铺信息")，进行对方法的描述
+   3.接着在方法上加注解进行参数的描述
+      @ApiImplicitParams(                //required = true代表是一个必填项
+                  {
+                  @ApiImplicitParam(name = "merchantId",value="商铺id",required = true,dataType = "long"),
+                  //如果有多个参数就这样加
+                  @ApiImplicitParam(name = "merchantName",value="商铺名称",required = false,dataType = "string")
+                  }
+          )
+6.@GetMapping("/queryMerchantById/{merchantId}/{merchantName}")
+
+需要@ApiImplicitParam的name属性与Restful风格的访问值一样，这样才能在页面中只显示一个同样的参数框
+
+7.访问swagger-ui的路径为 http://localhost:57010/swagger-ui.html 传入基本类型进行查询操作
+
+8.演示swagger-Ui通过传入对象进行操作
+  1.在Api的实体类上加 @ApiModel(description = "商铺实体类对象")  描述实体类
+  2.在Api的实体类的属性上加 @ApiModelProperty("商户名称") 描述实体类的一个字段
+  3.在_application中的另一个方法上加
+    @ApiOperation(value = "根据传递的merchant信息返回结果")
+        @PostMapping("/queryByMerchant")
+        public String query(Merchant merchant){}
+
+
+
+
+
+
+把项目里写的配置迁移到Nacos中
+1.nacos中新建命名空间huiminpay-dev
+2.在huiminpay-dev中新建主配置文件 	merchant-application.yaml
+3.在application的yml中，指定nacos的服务发现为新建命名空间，指定配置文件
+4.要保证service的服务和application的服务在同一命名空间，所以service也进行相同的操作(不进行3操作，默认是public的空间)
+
+再访问application时就加上nacos的merchant-application.yaml中配置的`/merchant`
+变成 http://localhost:57010/merchant/merchant/queryMerchantById/1/0
+
+配置扩展文件：通常扩展文件都是通用的一些配置
+如果扩展文件与主配置文件有相同的配置信息时，主配置文件可以对扩展配置文件进行覆盖
+如果扩展文件与主配置文件的配置信息不相同的时，就能一起使用不会覆盖
+1、在huiminpay-dev中新建扩展配置文件 spring-boot-http.yaml
+2、在application的yml中，配置扩展配置文件
+           ext-config:
+           -
+             data-id: spring-boot-http.yaml
+             group: COMMON_GROUP
+             refresh: true
+3、把主配置文件的路径配置去掉,就会用从配置文件中配置的路径
+   http://localhost:57010/exten/merchant/queryMerchantById/1/0
+
+如果访问swagger-ui 也需要加上配置的路径/merchant(主配置文件配置的路径) http://localhost:57010/merchant/swagger-ui.html
+                                    /exten(从配置文件配置的路径)  http://localhost:57010/exten/swagger-ui.html
+
+这个访问路径的配置(对于相同的配置)。nacos的主配置和从配置都会覆盖本地的配置，nacos的主配置又会覆盖nacos的从配置。
+本地的配置和nacos的主配置和从配置都不一样时才会用本地的配置
+真正访问的路径在上面的基础上再加上controller中的路径
+server:
+  servlet:
+    context-path: /merchant1
+
+
+mybatis-plus的使用
+引入mybatis-plus-boot-starter，api里写mapper接口，extends BaseMapper<XX>  yml文件也要配置
+
+mybatis-plus主键生成策略(在测试类中演示的)
+1.在service中引入测试包 spring-boot-starter-test
+2.建包,写测试类@RunWith(SpringRunner.class)
+              @SpringBootTest
+3.注入Mapper接口，使用Mybatisplus中的insert方法，即可插入数据
+    //mybatis-plus默认主键生成策略：
+    //如果不做任何主键策略配置，默认使用的是雪花算法生成主键ID(主键类型为Long或String，对应MySQL数据库
+    //                                                    就是BIGINT和VARCHAR)
+    //需要Mapper对象继承BaseMapper<Merchant>
+    //插入的数据如果不设置主键，插入后再打印此对象，就会自动回显默认生成的主键
+    //插入的数据如果设置了主键，插入后再打印此对象，就会自动回显自己设置的主键
+
+    //如果用UUID生成主键，要求主键的类型是VARCHAR
+
+    //mybatis中进行添加数据时，XML文件sql中 useGeneratedKeys="true"开启主键回写，才可以进行主键回显
+    //mybatis-plus中会自动进行回显
+
+
+(在测试类中演示的)
+使用mybatis-plus情况下数据库字段与实体类字段映射
+java中实体类字段的命名是驼峰命名的 如merchantName
+数据库字段的命名是用下划线连接命名的 如MERCHANT_NAME
+
+在名字一样时(形式不一样)使用mybatis可以自动把两种不同的形式( java实体类字段驼峰和数据库下划线的映射)做映射。因为
+mapUnderscoreToCamelCase是否开启自动驼峰命名规则（camel case）映射，在MyBatis-Plus中此属性默认值为true
+- 类型：   boolean
+- 默认值： true
+
+在service的yml文件中可以通过此进行设置，为false后，由于名字不对应就不能自动完成映射((除非java实体类字段和数据库的名字一致才可以映射))
+mybatis-plus:
+  configuration:
+    map-underscore-to-camel-case: false  //java实体类字段驼峰和数据库下划线的映射，true开启，false关闭
+
+
+自动映射对了，就不用按下面的写法(自动映射对了，下面的写不写都行，不影响映射)
+(在不写mapper配置文件的情况下)如果数据库的字段aa和java实体类的字段名字bb的单词不一致时(不像上面只是形式不一样)，
+或者在map-underscore-to-camel-case: false时
+可以在实体类上加注解进行对应.
+@TableName("merchant")            //实体类要映射那张表
+@TableId("id")                    //实体类要映射表中的主键为(id)哪个
+@TableField("merchant_name")      //实体类要映射表中的字段
+
+
+mysql数据库需要用代码生成UUID再添加进主键中,uuid不可以直接作为列的值
+oracle数据库可以用主键字段可以直接使用UUID，uuid可以直接作为列的值
+
+但是可以通过@TableId("id") 对实体类进行设置，就不需要在业务层生成new uuid()了
+@TableId(value = "id",type = IdType.UUID) 对主键是string类型时，还可以设置uuid自动生成
+
+
+mybatis-plus简单查询(在测试类中演示的)
+1.new 用Wrapper的子类QueryWrapper
+2.用QueryWrapper设置过滤规则(查询规则)
+3.mapper接口对象调用方法，传入wrapper的子类
+
+
+
+mybatis-plus分页查询(在测试类中演示的)
+1、先在service中用配置类，配置分页插件的拦截器(不配置不行)
+2.按照mybatis-plus的分页代码流程进行
+
+
+
+
+
+
+惠民支付验证码服务
+这是一个第三方项目sailing，需要下载下来，在本地启动起来
+需要启用redis，发送的验证码要存入redis中。因为手机验证码是有时效性的，需要有一个过期时间
+1.通过git下载验证码的项目 git clone https://gitee.com/qawine_base/sailing.git
+2.把yml文件中的redis密码注释掉，自己没有密码
+3.启动启动类，访问http://localhost:56085/sailing/swagger-ui.html
+4.访问生成验证信息的方法：
+         填写验证信息有效期
+         业务名称为: sms
+         业务携带参数(mobile为后台接收的名字): {"mobile":18239717831}
+5.发送成功后下面会出现一个key  "key": "sms:50c5d5c5185a49e3b2f468e9fdb3786a"
+  验证码发送到了sailing项目的控制台中
+6.redis会把生成的验证码用key value的形式存储
+  key就是：在redis的客户端输入`keys *`可以看到与swagger-ui中一样的key。"sms:50c5d5c5185a49e3b2f468e9fdb3786a"
+  value就是：发送的验证码898931
+7.访问校验的方法
+   业务名称为:  sms
+   填写验证码:  898931
+   填写key:    sms:50c5d5c5185a49e3b2f468e9fdb3786a
+ key和验证码对应时result为true
+
+
+在惠民支付中调用sailing
+在测试类中测试短信的发送
+1.在测试类中需要先导测试的包
+2.设置sailing项目需要的参数，用远程调用去调用
+
+真正用业务实现短信发送的接口
+1.huiminpay_merchant_api中定义接口
+ 接口中定义获取验证码的方法
+ 接口中定义验证码校验的方法
+2.huiminpay_merchant_service中定义类SmsServiceImpl实现该接口，用dubbo下的service注解
+  分别对两个方法进行业务的处理
+3.在controller层， @Reference注解注入进来SmsService
+   定义方法，调用接口实现类中的方法
+
+
+对各层实体类的说明
+数据层                业务层
+只针对数据库使用的     拿到的数据有前端传递的数据，从数据库获取的数据(对数据层的实体类做扩展)
+Merchant             MerchantDto
+
+控制层
+主要是与前端进行交互的，可以根据业务需求变化，传递不同的信息(又在业务层的实体类上做扩展)
+MerchantVo
+
+
+实现商户注册的功能
+1.在api中建实体类dto下的MerchantDto
+2.MerchantService接口中定义商户注册方法
+  (直接去对数据层的字段进行添加的话，由于用的是mybatis-plus，默认对全部的字段进行查询，就会报错
+   用自己定义MerchantDto就不会有问题，它不是用于和mapper对应的)
+3.MerchantServiceImpl重写方法，写商户注册的业务
+4.application中建实体类vo下的MerchantVo(可以只定义只前端传递过来的参数，不用比MerchantDto的字段多)
+5.application中MerchantController中定义商户注册的方法
+
+6.该注册方法先对验证码进行校验
+   在SmsServiceImpl中的方法中写校验的业务
+   再在MerchantController中商户注册的方法中引入
+7.商户注册的方法实现注册的业务
+
+
+
+

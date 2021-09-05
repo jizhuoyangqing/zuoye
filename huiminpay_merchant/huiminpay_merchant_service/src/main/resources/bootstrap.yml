@@ -1,0 +1,48 @@
+server:
+  port: 56040
+spring:
+  application:
+    name: merchant-service
+  cloud:
+    nacos:
+      discovery:
+        server-addr: 127.0.0.1:8848
+        # 服务放哪：指定命名空间huiminpay-dev的唯一标识
+        namespace: ce47930c-d484-4ca1-94ee-5cdfde730750
+      config:
+        server-addr: 127.0.0.1:8848
+        file-extension: yaml
+        group: DEFAULT_GROUP
+        # 配置文件放哪
+        namespace: ce47930c-d484-4ca1-94ee-5cdfde730750
+  datasource:
+    type: com.alibaba.druid.pool.DruidDataSource
+    driver-class-name: com.mysql.jdbc.Driver
+    url: jdbc:mysql://localhost:3306/huiminpay_merchant_service?useUnicode=true
+    username: root
+    password: root
+# 配置mybatis-plus
+mybatis-plus:
+  type-aliases-package: com.huiminpay.bean
+  mapper-locations: classpath:/mapper/**
+  # java实体类字段驼峰和数据库下划线的映射，默认是true开启，false关闭
+  configuration:
+    map-underscore-to-camel-case: true
+# 配置日志输出
+logging:
+  level:
+    com.huiminpay.mapper: debug
+# 开启dubbo协议
+dubbo:
+  scan:
+    base-packages: com.huiminpay
+  protocol:
+    name: dubbo
+    port: 20881
+  registry:
+    address: nacos://127.0.0.1:8848
+  # 自己配置短信发送的地址及参数
+sms:
+  url: http://localhost:56085/sailing
+  effectiveTime: 300
+  name: sms

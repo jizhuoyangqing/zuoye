@@ -1,0 +1,26 @@
+server:
+  port: 57010
+  servlet:
+    context-path: /merchant
+spring:
+  application:
+    name: merchant-application
+  cloud:
+    nacos:
+      discovery:
+        server-addr: 127.0.0.1:8848
+        # 服务放哪：指定命名空间huiminpay-dev的唯一标识
+        namespace: ce47930c-d484-4ca1-94ee-5cdfde730750
+        # 没有指定分组就用默认的
+      config:
+        server-addr: 127.0.0.1:8848
+        file-extension: yaml
+        group: DEFAULT_GROUP
+        # 配置文件放哪
+        namespace: ce47930c-d484-4ca1-94ee-5cdfde730750
+        # 配置扩展配置文件
+        ext-config:
+        -
+          data-id: spring-boot-http.yaml
+          group: COMMON_GROUP
+          refresh: true
