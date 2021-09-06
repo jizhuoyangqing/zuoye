@@ -1,9 +1,8 @@
 package com.huiminpay.controller;
 
-import com.huiminpay.api.MerchantService;
-import com.huiminpay.api.SmsService;
-import com.huiminpay.api.dto.MerchantDto;
-import com.huiminpay.bean.Merchant;
+import com.huiminpay.api.MerchantServiceApi;
+import com.huiminpay.api.SmsServiceApi;
+import com.huiminpay.dto.MerchantDto;
 import com.huiminpay.vo.MerchantVo;
 import io.swagger.annotations.*;
 import org.apache.dubbo.config.annotation.Reference;
@@ -14,10 +13,10 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping("/merchant")
 public class MerchantController {
     @Reference
-    MerchantService merchantService;
+    MerchantServiceApi merchantServiceApi;
 
     @Reference
-    SmsService smsService;
+    SmsServiceApi smsServiceApi;
 
 
     //@ApiOperation(value = "根据商铺的id获取商铺信息",httpMethod ="GET")
@@ -33,17 +32,17 @@ public class MerchantController {
     )
     //需要@ApiImplicitParam的name属性与Restful风格的访问值一样，这样才能在页面中只显示一个同样的参数框
     @GetMapping("/queryMerchantById/{merchantId}/{merchantName}")
-    public Merchant queryMerchantById(@PathVariable("merchantId") Long id,
+    public MerchantDto queryMerchantById(@PathVariable("merchantId") Long id,
                                       @PathVariable("merchantName") String name) {
         System.out.println(name);
-        return merchantService.queryMerchantById(id);
+        return merchantServiceApi.queryMerchantById(id);
     }
 
 
     @ApiOperation(value = "根据传递的merchant信息返回结果")
     @PostMapping("/queryByMerchant")
-    public void query(Merchant merchant) {
-        System.out.println(merchant.toString());
+    public void query(MerchantDto merchantDto) {
+        System.out.println(merchantDto.toString());
     }
 
 
@@ -53,7 +52,7 @@ public class MerchantController {
     @ApiImplicitParam(name = "phone", value = "用户手机号", required = true, dataType = "string")
     @GetMapping("/sendPhone/{phone}")
     public String sengSms(@PathVariable("phone") String phoneNumber) {
-        String smsKey = smsService.sendSms(phoneNumber);
+        String smsKey = smsServiceApi.sendSms(phoneNumber);
         return smsKey;
     }
 
@@ -64,13 +63,13 @@ public class MerchantController {
     public MerchantVo registerMerchant(@RequestBody MerchantVo merchantVo) {
 
         //校验验证码 这里抛异常后就不会往在下面走，不会完成注册
-        smsService.verify(merchantVo.getVerifiykey(),merchantVo.getVerifiyCode());
+        smsServiceApi.verify(merchantVo.getVerifiykey(),merchantVo.getVerifiyCode());
 
 
         //商户的注册
         MerchantDto merchantDto = new MerchantDto();
         merchantDto.setMobile(merchantVo.getMobile());
-        merchantService.insertMerchant(merchantDto);
+        merchantServiceApi.insertMerchant(merchantDto);
         return merchantVo;
     }
 }

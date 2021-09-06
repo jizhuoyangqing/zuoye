@@ -1,7 +1,7 @@
 package com.huiminpay.api;
 
 //验证码接口
-public interface SmsService {
+public interface SmsServiceApi {
     //获取验证码的方法
     public String sendSms(String phone);
     //验证码校验的方法

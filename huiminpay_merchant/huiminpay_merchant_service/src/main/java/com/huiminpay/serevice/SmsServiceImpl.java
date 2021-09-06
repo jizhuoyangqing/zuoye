@@ -1,6 +1,6 @@
 package com.huiminpay.serevice;
 
-import com.huiminpay.api.SmsService;
+import com.huiminpay.api.SmsServiceApi;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.*;
@@ -8,12 +8,10 @@ import org.springframework.web.client.RestClientException;
 import org.springframework.web.client.RestTemplate;
 
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.Map;
-import java.util.Set;
 
 @org.apache.dubbo.config.annotation.Service
-public class SmsServiceImpl implements SmsService {
+public class SmsServiceImpl implements SmsServiceApi {
 
     @Value("${sms.url}")
     String url;
