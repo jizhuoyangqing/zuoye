@@ -225,3 +225,9 @@ MerchantVo
 
 
 
+对项目的架构自行进行了改造，改造的内容有
+1.api层不再定义Merchant实体类，放到Service层的entity包中
+2.把原先在api层调用的数据库层的jar包依赖也放入Service中，实现在Api层中只定义接口
+3.由于对实体类进行位置的改动，有些方法需要重新引入该类。
+4.service层中的有些方法从Merchant改变成了MerchanDto，Application层引用该方法时，需要对这些方法的返回值，方法的参数做出改变
+5.由于application层中引入的api层
