@@ -1,17 +1,21 @@
-package com.huiminpay.serevice;
+package com.huiminpay.service;
 
-import com.huiminpay.api.SmsServiceApi;
+import com.huiminpay.common.cache.domain.CommonErrorCode;
+import com.huiminpay.common.cache.exception.BusinessExceptionUtil;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.*;
+import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestClientException;
 import org.springframework.web.client.RestTemplate;
 
 import java.util.HashMap;
 import java.util.Map;
 
-@org.apache.dubbo.config.annotation.Service
-public class SmsServiceImpl implements SmsServiceApi {
+@Service
+@Slf4j
+public class SmsService {
 
     @Value("${sms.url}")
     String url;
@@ -25,8 +29,7 @@ public class SmsServiceImpl implements SmsServiceApi {
     @Autowired
     RestTemplate restTemplate;
 
-    //获取验证码的接口
-    @Override
+    //获取验证码的方法
     public String sendSms(String phone) {
         //下面参数的设置都是为了往sailing项目中的生成验证信息的方法中传参数
         //定义的请求路径中包含了所需的两个参数，具体数据封装进了map集合中
@@ -64,10 +67,10 @@ public class SmsServiceImpl implements SmsServiceApi {
         return null;
     }
 
-
-    //验证码校验的接口
+    //验证码校验的方法
+    //验证码的key值由前端传递(一点击验证码，就会返回一个key值存在前端)
+    //验证码的值由用户传递(一点击获取验证码，就会返回一个验证码给用户手机,用户自己输入即可)
     //如果没有抛异常就代表验证成功
-    @Override
     public String verify(String verifyKey, String verifyCode) {
         //http://localhost:56085/sailing/verify?name=sms&verificationCode=631311&verificationKey=sms%3Aa58cd08f0a834b35b23967658f2d6f4e
         String veriUrl = url + "/verify?name=sms&verificationCode=" + verifyCode + "&verificationKey=" + verifyKey;
@@ -79,11 +82,20 @@ public class SmsServiceImpl implements SmsServiceApi {
             responseMap = exchange.getBody();
         } catch (RestClientException e) {
             e.printStackTrace();
-            throw new RuntimeException("验证码错误");
+            log.error("校验验证码错误");
+            //throw new RuntimeException("验证码错误");
+            //使用自定义异常,通过枚举类型设置信息
+            //throw new BusinessException(CommonErrorCode.E_100102);
+            //对自定义的异常进行封装
+            BusinessExceptionUtil.cast(CommonErrorCode.E_100102);
         }
         if (responseMap == null || responseMap.get("result") == null ||
-                !(Boolean)responseMap.get("result")) {
-            throw new RuntimeException("验证码错误");
+                !(Boolean) responseMap.get("result")) {
+            //throw new RuntimeException("验证码错误");
+            //使用自定义异常,通过枚举类型设置信息
+            //throw new BusinessException(CommonErrorCode.E_100102);
+            //对自定义的异常进行封装
+            BusinessExceptionUtil.cast(CommonErrorCode.E_100102);
         }
         return null;
     }

@@ -24,3 +24,8 @@ spring:
           data-id: spring-boot-http.yaml
           group: COMMON_GROUP
           refresh: true
+  # 自己配置短信发送的地址及参数
+sms:
+  url: http://localhost:56085/sailing
+  effectiveTime: 300
+  name: sms

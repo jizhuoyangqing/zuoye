@@ -230,4 +230,27 @@ MerchantVo
 2.把原先在api层调用的数据库层的jar包依赖也放入Service中，实现在Api层中只定义接口
 3.由于对实体类进行位置的改动，有些方法需要重新引入该类。
 4.service层中的有些方法从Merchant改变成了MerchanDto，Application层引用该方法时，需要对这些方法的返回值，方法的参数做出改变
-5.由于application层中引入的api层
+5.由于application层中引入的api层中没有数据库的jar包，所以在application的启动类中也不需要排除这些依赖了
+6.sailing的服务放在application中，因为放在service层中还需要在调用一次
+
+
+VO层的参数要自定义成和前端表单提交的数据数量一致即可
+
+
+
+
+使用BeanUtils进行对象转换
+如：BeanUtils.copyProperties(merchantVo,merchantDto);
+
+也可以用 --> MapStruct对象转换
+1.在common中引入mapstruct-jdk8，mapstruct-processor。排除掉swagger中的mapstruct
+2.写转换器，基本上每层都涉及所以那里需要就在那层写转换器
+3.调用该转化器完成对象的转换
+
+
+全局异常处理
+1.huiminpay_common中定义自定义异常类 BusinessException
+2.可以针对application层的异常，全部被一个异常捕获类捕获，就是每层都有一个异常捕获类
+  (异常捕获类也可以写在common中，所有层共用一个异常捕获类)
+3.在知道自己有可能出现异常的地方(设置异常类的参数并)抛出自己定义的异常类 BusinessException
+  (也可以自己设置一个工具类ExceptionCast，对抛的异常进行封装再执行)

@@ -41,8 +41,3 @@ dubbo:
     port: 20881
   registry:
     address: nacos://127.0.0.1:8848
-  # 自己配置短信发送的地址及参数
-sms:
-  url: http://localhost:56085/sailing
-  effectiveTime: 300
-  name: sms
