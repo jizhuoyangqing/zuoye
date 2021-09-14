@@ -1,0 +1,9 @@
+<component name="libraryTable">
+  <library name="sailing">
+    <CLASSES>
+      <root url="jar://$PROJECT_DIR$/sailing/target/sailing.jar!/" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES />
+  </library>
+</component>

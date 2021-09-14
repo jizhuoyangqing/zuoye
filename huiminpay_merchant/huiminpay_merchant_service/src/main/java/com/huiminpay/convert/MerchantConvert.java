@@ -14,6 +14,7 @@ import java.util.List;
  */
 @Mapper
 public interface MerchantConvert {
+
     //创建转换构建器
     MerchantConvert Instance = Mappers.getMapper(MerchantConvert.class);
     //entity-->dto

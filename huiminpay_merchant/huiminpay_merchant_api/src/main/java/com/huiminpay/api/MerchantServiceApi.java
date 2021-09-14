@@ -10,6 +10,8 @@ public interface MerchantServiceApi {
 
 
     //商户注册
-    public MerchantDto insertMerchant(MerchantDto merchantDto);
+    public MerchantDto registerMerchant(MerchantDto merchantDto);
 
+    //商户资质申请包含图片上传后的路径和其他基本信息
+    MerchantDto applyMerchant(Long merchantId, MerchantDto merchantDto);
 }
