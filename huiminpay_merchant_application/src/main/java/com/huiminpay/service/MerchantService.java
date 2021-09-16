@@ -6,7 +6,7 @@ import com.huiminpay.common.cache.exception.BusinessExceptionUtil;
 import com.huiminpay.common.cache.util.PhoneUtil;
 import com.huiminpay.common.cache.util.QiniuUtil;
 import com.huiminpay.convert.MerchantRegisterConvert;
-import com.huiminpay.dto.MerchantDto;
+import com.huiminpay.dto.MerchantDTO;
 import com.huiminpay.vo.MerchantVo;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang.StringUtils;
@@ -17,7 +17,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
-import java.util.UUID;
 
 @Service
 @Slf4j
@@ -39,7 +38,7 @@ public class MerchantService {
 
 
     //令牌测试类使用的
-    public MerchantDto queryMerchantById(Long merchantId) {
+    public MerchantDTO queryMerchantById(Long merchantId) {
         return merchantServiceApi.queryMerchantById(merchantId);
     }
 
@@ -74,12 +73,12 @@ public class MerchantService {
 
 
         //商户的注册
-        //MerchantDto merchantDto = new MerchantDto();
+        //MerchantDTO merchantDto = new MerchantDTO();
 
         //第一种用法 merchantDto.setMobile(merchantVo.getMobile());
         //第二种用法 BeanUtils.copyProperties(merchantVo,merchantDto);
         //第三种用法 原先还得new Merchant 现在不用new了，可以直接返回该对象
-        MerchantDto merchantDto = MerchantRegisterConvert.INSTANCE.vo2dto(merchantVo);
+        MerchantDTO merchantDto = MerchantRegisterConvert.INSTANCE.vo2dto(merchantVo);
 
         merchantServiceApi.registerMerchant(merchantDto);
         return merchantVo;

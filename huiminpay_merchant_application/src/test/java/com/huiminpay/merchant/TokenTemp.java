@@ -2,16 +2,13 @@ package com.huiminpay.merchant;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import com.huiminpay.common.cache.util.EncryptUtil;
-import com.huiminpay.common.cache.util.SecurityUtil;
-import com.huiminpay.dto.MerchantDto;
+import com.huiminpay.dto.MerchantDTO;
 import com.huiminpay.service.MerchantService;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringRunner;
-
-import java.util.Base64;
 
 /**
  * @author Administrator
@@ -27,8 +24,8 @@ public class TokenTemp {
     @Test
     public void createTestToken() {
                         //这个id就是数据库里真实的ID
-        Long merchantId = 1376438579462737921L;//填写用于测试的商户id
-        MerchantDto merchantDTO = merchantService.queryMerchantById(merchantId);
+        Long merchantId = 1424617411625193473L;//填写用于测试的商户id
+        MerchantDTO merchantDTO = merchantService.queryMerchantById(merchantId);
         JSONObject token = new JSONObject();
         token.put("mobile", merchantDTO.getMobile());
         token.put("user_name", merchantDTO.getUsername());

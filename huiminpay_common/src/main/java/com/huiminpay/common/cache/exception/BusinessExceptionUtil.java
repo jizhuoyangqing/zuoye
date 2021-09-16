@@ -1,6 +1,5 @@
 package com.huiminpay.common.cache.exception;
 
-import com.huiminpay.common.cache.domain.CommonErrorCode;
 import com.huiminpay.common.cache.domain.ErrorCode;
 
 /**

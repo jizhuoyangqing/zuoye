@@ -1,8 +1,7 @@
 package com.huiminpay.convert;
 
-import com.huiminpay.dto.MerchantDto;
+import com.huiminpay.dto.MerchantDTO;
 import com.huiminpay.vo.MerchantVo;
-import org.mapstruct.Mapper;
 import org.mapstruct.factory.Mappers;
 
 /**
@@ -18,9 +17,9 @@ public interface MerchantRegisterConvert {
     MerchantRegisterConvert INSTANCE = Mappers.getMapper(MerchantRegisterConvert.class);
 
     //vo-->dto
-    public MerchantDto vo2dto(MerchantVo merchantVo);
+    public MerchantDTO vo2dto(MerchantVo merchantVo);
 
     //dto-->vo
-    public MerchantVo dto2vo(MerchantDto merchantDto);
+    public MerchantVo dto2vo(MerchantDTO merchantDto);
 
 }

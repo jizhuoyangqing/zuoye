@@ -32,7 +32,7 @@ public class GlobleExceptionHandle {
         }
 
         //非自定义的异常类型
-        return new RestErrorResponse(CommonErrorCode.UNKOWN.getCode(),CommonErrorCode.UNKOWN.getDesc());
+        return new RestErrorResponse(CommonErrorCode.UNKNOWN.getCode(),CommonErrorCode.UNKNOWN.getDesc());
     }
 
 }

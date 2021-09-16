@@ -3,6 +3,7 @@
   <component name="ProjectModuleManager">
     <modules>
       <module fileurl="file://$PROJECT_DIR$/sailing/src/main/main.iml" filepath="$PROJECT_DIR$/sailing/src/main/main.iml" />
+      <module fileurl="file://$PROJECT_DIR$/generator/src/main/main1.iml" filepath="$PROJECT_DIR$/generator/src/main/main1.iml" />
     </modules>
   </component>
 </project>

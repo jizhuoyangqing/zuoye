@@ -2,6 +2,7 @@
 <project version="4">
   <component name="Encoding" defaultCharsetForPropertiesFiles="UTF-8">
     <file url="file://$PROJECT_DIR$" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/generator" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/huiminpay_common" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/huiminpay_merchant" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/huiminpay_merchant/huiminpay_merchant_api" charset="UTF-8" />

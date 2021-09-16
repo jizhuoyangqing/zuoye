@@ -7,8 +7,8 @@ import lombok.Data;
 import java.io.Serializable;
 
 @Data
-@ApiModel(value = "MerchantDto",description = "商铺实体类对象")
-public class MerchantDto implements Serializable {
+@ApiModel(value = "MerchantDTO",description = "商铺实体类对象")
+public class MerchantDTO implements Serializable {
 
     @ApiModelProperty("主键")
     private Long id;

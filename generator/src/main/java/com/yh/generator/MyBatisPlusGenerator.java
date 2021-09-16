@@ -91,7 +91,7 @@ public class MyBatisPlusGenerator {
         // 生成包配置，在前面路径的基础上在加包名
         PackageConfig packageConfig = new PackageConfig();
         packageConfig.setParent("com.huiminpay");
-        //如果需要手动输入模块名，最好跟自己项目的目录保持一致
+        //如果需要手动输入模块名，最好跟自己项目的目录保持一致。控制台打印一句话 请输入模块名：
         packageConfig.setModuleName(scanner("模块名"));
         autoGenerator.setPackageInfo(packageConfig);
 
@@ -158,12 +158,14 @@ public class MyBatisPlusGenerator {
         autoGenerator.setTemplateEngine(new FreemarkerTemplateEngine());
         System.out.println("===================== MyBatis Plus Generator ==================");
 
-        //生成Dto
-        if(IS_DTO){
-            globalConfig.setSwagger2(true);
-            globalConfig.setEntityName("%sDTO");
-            packageConfig.setEntity("dto");
-        }
+        //生成Dto  这个地方如果放开就会生成Dto就不给生成entity,如果注释掉就不给生成Dto，只生成entity
+//        if(IS_DTO){
+//            globalConfig.setSwagger2(true);
+//            globalConfig.setEntityName("%sDTO");
+//            packageConfig.setEntity("dto");
+//        }
+
+
         autoGenerator.execute();
 
         System.out.println("================= MyBatis Plus Generator Execute Complete ==================");
