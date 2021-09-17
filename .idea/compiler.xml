@@ -8,6 +8,8 @@
         <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
         <outputRelativeToContentRoot value="true" />
         <module name="generator" />
+        <module name="huiminpay-transaction-api" />
+        <module name="huiminpay-transaction-service" />
         <module name="huiminpay_common" />
         <module name="huiminpay_merchant_api" />
         <module name="huiminpay_merchant_application" />

@@ -428,3 +428,15 @@ List<App> apps2 = appMapper.selectList(new LambdaQueryWrapper<App>().eq(App::get
 
 
 
+
+支付渠道参数配置
+有以下几个接口，商户应用平台与交易服务交互(换服务了，不用商户的服务了)，服务拆开了数据库也拆开了
+    获取平台服务类型                         对应huiminpay_transaction库中的platform_channel表
+    把查询出来的服务类型给应用绑定服务类型      添加记录到应用和服务类型绑定的表app_platform_channel
+    查询支付渠道                             pay_channel支付渠道表
+                                            platform_pay_channel表：每种服务类型有几种支付渠道
+                                                  pay_channel表和platform_pay_channel表结合起来确定一个服务类型能配置的渠道
+    给应用配置支付渠道参数                    对每个所选的支付渠道进行配置参数
+                                            配置的支付渠道参数到pay_channel_param表中
+
+
